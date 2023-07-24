@@ -12,7 +12,7 @@
     <RepositoryUrl>https://github.com/buttplugio/buttplug-csharp</RepositoryUrl>
     <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
     <Copyright>Copyright Nonpolynomial Labs, LLC</Copyright>
-    <PackageIcon>buttplug-logo-1.png</PackageIcon>
+    <PackageIcon></PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <IncludeSymbols>True</IncludeSymbols>
@@ -32,10 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\icons\buttplug-logo-1.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
     <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
