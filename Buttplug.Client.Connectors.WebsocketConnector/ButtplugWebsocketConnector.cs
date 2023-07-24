@@ -1,17 +1,17 @@
-﻿using Buttplug.Core;
-
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Channels;
-using Buttplug.Core.Messages;
 using vtortola.WebSockets;
 using vtortola.WebSockets.Rfc6455;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using Robust.Buttplug.Client;
+using Robust.Buttplug.Core.Messages;
+using Robust.Buttplug.Core;
 
-namespace Buttplug.Client.Connectors.WebsocketConnector
+namespace Robust.Buttplug
 {
     public class ButtplugWebsocketConnector : ButtplugRemoteJSONConnector, IButtplugClientConnector
     {
@@ -146,32 +146,32 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                         }
                         if (incomingMsg.MessageType == WebSocketMessageType.Text)
                         {
-                            var msgContent = String.Empty;
+                            var msgContent = string.Empty;
                             using (var reader = new StreamReader(incomingMsg, utf8NoBom))
                                 msgContent = await reader.ReadToEndAsync();
                             ReceiveMessages(msgContent);
                         }
 
                         readTask = _ws.ReadMessageAsync(token);
-                    } 
+                    }
                     else if (readTask.IsCanceled)
                     {
                         break;
                     }
-                    else if (writeTask.IsCompleted) 
+                    else if (writeTask.IsCompleted)
                     {
                         try
                         {
                             var outMsgs = await writeTask.ConfigureAwait(false);
-                            if (outMsgs == null) 
+                            if (outMsgs == null)
                             {
                                 break;
                             }
                             if (_ws?.IsConnected == true)
                             {
                                 await _ws.WriteStringAsync(outMsgs, token).ConfigureAwait(false);
-                            } 
-                            else 
+                            }
+                            else
                             {
                                 break;
                             }
@@ -193,8 +193,8 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
             }
             catch (Exception e)
             {
-                    // TODO Figure out how to error here?
-                    Debug.WriteLine(e);
+                // TODO Figure out how to error here?
+                Debug.WriteLine(e);
             }
             finally
             {

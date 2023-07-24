@@ -9,12 +9,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Buttplug.Core.Messages;
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Robust.Buttplug.Core.Messages;
 
-namespace Buttplug.Core
+namespace Robust.Buttplug.Core
 {
     /// <summary>
     /// Handles serialization (object to JSON), deserialization (JSON to object) and validation of messages.
@@ -129,10 +128,10 @@ namespace Buttplug.Core
                 throw new ButtplugMessageException(
                     $"Type {msgType.Name} is not a subclass of ButtplugMessage");
             }
-            if (msgType.Namespace != "Buttplug.Core.Messages")
+            if (msgType.Namespace != typeof(ButtplugMessage).Namespace)
             {
                 throw new ButtplugMessageException(
-                    $"Type {msgType.Name} ({msgType.Namespace}) is not in the namespace of Buttplug.Core.Messages");
+                    $"Type {msgType.Name} ({msgType.Namespace}) is not in the namespace of {typeof(ButtplugMessage).Namespace}");
             }
 
             var msgName = ButtplugMessage.GetName(msgType);
@@ -163,10 +162,10 @@ namespace Buttplug.Core
         /// <returns>JSON string representing a Buttplug message.</returns>
         public string Serialize(ButtplugMessage msg)
         {
-            if (msg.GetType().Namespace != "Buttplug.Core.Messages")
+            if (msg.GetType().Namespace != typeof(ButtplugMessage).Namespace)
             {
                 throw new ButtplugMessageException(
-                    $"Type {msg.GetType().Name} ({msg.GetType().Namespace}) is not in the namespace of Buttplug.Core.Messages");
+                    $"Type {msg.GetType().Name} ({msg.GetType().Namespace}) is not in the namespace of {typeof(ButtplugMessage).Namespace}");
             }
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
             // Support downgrading messages

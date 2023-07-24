@@ -5,11 +5,10 @@
 // </copyright>
 
 using System.Collections.Generic;
-using Buttplug.Core;
+using Robust.Buttplug.Core;
+using Robust.Buttplug.Core.Messages;
 
-using Buttplug.Core.Messages;
-
-namespace Buttplug.Client
+namespace Robust.Buttplug.Client
 {
     // ReSharper disable once InconsistentNaming
     public class ButtplugConnectorJSONParser

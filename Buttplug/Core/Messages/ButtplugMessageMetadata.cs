@@ -6,7 +6,7 @@
 
 using System;
 
-namespace Buttplug.Core.Messages
+namespace Robust.Buttplug.Core.Messages
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class ButtplugMessageMetadata : Attribute

@@ -9,11 +9,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Buttplug.Core;
+using Robust.Buttplug.Core;
+using Robust.Buttplug.Core.Messages;
 
-using Buttplug.Core.Messages;
-
-namespace Buttplug.Client
+namespace Robust.Buttplug.Client
 {
     /// <summary>
     /// The Buttplug Client representation of a Buttplug Device connected to a server.
@@ -195,7 +194,7 @@ namespace Buttplug.Client
 
         public async Task RotateAsync(IEnumerable<(double, bool)> cmds)
         {
-            if (!RotateAttributes.Any()) 
+            if (!RotateAttributes.Any())
             {
                 throw new ButtplugDeviceException($"Device {Name} does not support rotation");
             }

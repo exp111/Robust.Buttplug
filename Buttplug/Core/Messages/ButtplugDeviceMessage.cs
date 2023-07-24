@@ -5,8 +5,9 @@
 // </copyright>
 
 using Newtonsoft.Json;
+using Robust.Buttplug.Core;
 
-namespace Buttplug.Core.Messages
+namespace Robust.Buttplug.Core.Messages
 {
     /// <summary>
     /// Subclass of Buttplug Messages, that command a device to take an action.

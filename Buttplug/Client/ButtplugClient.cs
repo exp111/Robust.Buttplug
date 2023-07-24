@@ -6,14 +6,13 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Buttplug.Core;
-using Buttplug.Core.Messages;
+using Robust.Buttplug.Core;
+using Robust.Buttplug.Core.Messages;
 
-namespace Buttplug.Client
+namespace Robust.Buttplug.Client
 {
     public class ButtplugClient :
 #if NETSTANDARD2_1_OR_GREATER

@@ -7,13 +7,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Newtonsoft.Json;
 
 // Namespace containing all Buttplug messages, as specified by the Buttplug Message Spec at
 // https://docs.buttplug.io/spec. For consistency sake, all message descriptions are stated in
 // relation to the server, i.e. message are sent "(from client) to server" or "(to client) from server".
-namespace Buttplug.Core.Messages
+namespace Robust.Buttplug.Core.Messages
 {
     /// <summary>
     /// Signifies the success of the last message/query.

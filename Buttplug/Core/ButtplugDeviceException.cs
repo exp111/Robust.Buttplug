@@ -5,9 +5,9 @@
 // </copyright>
 
 using System;
-using Buttplug.Core.Messages;
+using Robust.Buttplug.Core.Messages;
 
-namespace Buttplug.Core
+namespace Robust.Buttplug.Core
 {
     public class ButtplugDeviceException : ButtplugException
     {

@@ -5,10 +5,9 @@
 // </copyright>
 
 using System;
+using Robust.Buttplug.Core.Messages;
 
-using Buttplug.Core.Messages;
-
-namespace Buttplug.Core
+namespace Robust.Buttplug.Core
 {
     public class ButtplugHandshakeException : ButtplugException
     {

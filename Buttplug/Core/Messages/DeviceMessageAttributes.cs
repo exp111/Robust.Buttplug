@@ -2,9 +2,20 @@
 using System;
 using System.Runtime.Serialization;
 using System.Linq;
+
+/* Nicht gemergte Änderung aus Projekt "Robust.Buttplug (netstandard2.1)"
+Vor:
+using Newtonsoft.Json.Converters;
+Nach:
+using Newtonsoft.Json.Converters;
+using Robust.Buttplug.Core.Messages;
+using Buttplug;
+using Buttplug.Core;
+using Buttplug.Core.Messages;
+*/
 using Newtonsoft.Json.Converters;
 
-namespace Buttplug.Core.Messages
+namespace Robust.Buttplug.Core.Messages
 {
     [JsonConverter(typeof(StringEnumConverter))]
     public enum ActuatorType

@@ -6,7 +6,7 @@
 
 using System;
 
-namespace Buttplug.Core
+namespace Robust.Buttplug.Core
 {
     public class ButtplugExceptionEventArgs : EventArgs
     {

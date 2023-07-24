@@ -7,8 +7,9 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Robust.Buttplug.Core;
 
-namespace Buttplug.Core.Messages
+namespace Robust.Buttplug.Core.Messages
 {
     /// <summary>
     /// Base class for Buttplug protocol messages.

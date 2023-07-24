@@ -7,11 +7,10 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Buttplug.Core;
+using Robust.Buttplug.Core;
+using Robust.Buttplug.Core.Messages;
 
-using Buttplug.Core.Messages;
-
-namespace Buttplug.Client
+namespace Robust.Buttplug.Client
 {
     public interface IButtplugClientConnector
     {

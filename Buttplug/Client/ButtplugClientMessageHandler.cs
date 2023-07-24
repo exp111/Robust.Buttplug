@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Threading;
-using Buttplug.Core.Messages;
-using Buttplug.Core;
+using Robust.Buttplug.Core;
+using Robust.Buttplug.Core.Messages;
 
-namespace Buttplug.Client
+namespace Robust.Buttplug.Client
 {
     internal class ButtplugClientMessageHandler
     {
