@@ -1,12 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using System.Linq;
-using Newtonsoft.Json.Converters;
+using System.Text.Json.Serialization;
 
 namespace Buttplug.Core.Messages
 {
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ActuatorType
     {
         [EnumMember(Value = "Unknown")]
@@ -25,7 +23,7 @@ namespace Buttplug.Core.Messages
         Position
     }
 
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum SensorType
     {
         [EnumMember(Value = "Unknown")]
@@ -47,13 +45,16 @@ namespace Buttplug.Core.Messages
 
         [JsonIgnore]
         internal uint _index;
-        [JsonProperty(Required = Required.Always)]
-        public readonly string FeatureDescriptor;
-        [JsonProperty(Required = Required.Always)]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public readonly ActuatorType ActuatorType;
-        [JsonProperty(Required = Required.Always)]
-        public readonly uint StepCount;
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
+        public /*readonly*/ string FeatureDescriptor;
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public /*readonly*/ ActuatorType ActuatorType;
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
+        public /*readonly*/ uint StepCount;
     }
 
     public class SensorDeviceMessageAttributes
@@ -63,13 +64,16 @@ namespace Buttplug.Core.Messages
 
         [JsonIgnore]
         internal uint _index;
-        [JsonProperty(Required = Required.Always)]
-        public readonly string FeatureDescriptor;
-        [JsonProperty(Required = Required.Always)]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public readonly SensorType SensorType;
-        [JsonProperty(Required = Required.Always)]
-        public readonly uint[][] SensorRange;
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
+        public /*readonly*/ string FeatureDescriptor;
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public /*readonly*/ SensorType SensorType;
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
+        public /*readonly*/ uint[][] SensorRange;
     }
 
     public class RawDeviceMessageAttributes

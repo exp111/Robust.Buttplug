@@ -8,11 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using Buttplug.Core.Messages;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Buttplug.Core
 {
@@ -29,7 +28,8 @@ namespace Buttplug.Core
         /// <summary>
         /// Serializes/deserializes object to/from JSON.
         /// </summary>
-        private readonly JsonSerializer _serializer;
+        //private readonly JsonSerializer _serializer;
+        private readonly JsonSerializerOptions _serializerOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugJsonMessageParser"/> class.
@@ -37,7 +37,11 @@ namespace Buttplug.Core
         /// <param name="logManager">Log manager, passed from the parser owner.</param>
         public ButtplugJsonMessageParser()
         {
-            _serializer = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
+            //_serializer = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
+            _serializerOptions = new JsonSerializerOptions()
+            {
+                IncludeFields = true,
+            };
             _messageTypes = new Dictionary<string, Type>();
             foreach (var messageType in ButtplugUtils.GetAllMessageTypes())
             {
@@ -58,61 +62,62 @@ namespace Buttplug.Core
         /// <returns>Enumerable of <see cref="ButtplugMessage"/> objects.</returns>
         public IEnumerable<ButtplugMessage> Deserialize(string jsonMsg)
         {
-            var textReader = new StringReader(jsonMsg);
+            var bytes = Encoding.UTF8.GetBytes(jsonMsg);
 
             // While we aren't receiving from a stream here, we may get multiple JSON arrays
             // depending on how we received messages.
-            var reader = new JsonTextReader(textReader)
+            /*var reader = new Utf8JsonReader(textReader)
             {
                 CloseInput = false,
                 SupportMultipleContent = true,
-            };
+            };*/
 
             // Aggregate all messages in the string we received. Note that we may have received
             // multiple strings, which may have multiple arrays. If any message in the array is
             // invalid, we dump the message list and just throw. This is considered a catastrophic
             // event and the system should probably just shut down anyways.
             var msgList = new List<ButtplugMessage>();
-            while (true)
+            /*try
             {
-                try
+                if (!reader.Read())
                 {
-                    if (!reader.Read())
-                    {
-                        break;
-                    }
-                }
-                catch (JsonReaderException e)
-                {
-                    throw new ButtplugMessageException($"Not valid JSON: {jsonMsg} - {e.Message}");
-                }
-
-                JArray msgArray;
-                try
-                {
-                    msgArray = JArray.Load(reader);
-                }
-                catch (JsonReaderException e)
-                {
-                    throw new ButtplugMessageException($"Not valid JSON: {jsonMsg} - {e.Message}");
-                }
-
-                foreach (var jsonObj in msgArray.Children<JObject>())
-                {
-                    var msgName = jsonObj.Properties().First().Name;
-
-                    // Only way we should get here is if the schema includes a class that we don't
-                    // have a matching C# class for.
-                    if (!_messageTypes.ContainsKey(msgName))
-                    {
-                        throw new ButtplugMessageException($"{msgName} is not a valid message class");
-                    }
-
-                    // This specifically could fail due to object conversion.
-                    msgList.Add(DeserializeAs(jsonObj, _messageTypes[msgName]));
+                    break;
                 }
             }
+            catch (JsonException e)
+            {
+                throw new ButtplugMessageException($"Not valid JSON: {jsonMsg} - {e.Message}");
+            }*/
 
+            JsonDocument msgArray;
+            try
+            {
+                msgArray = JsonDocument.Parse(bytes);
+            }
+            catch (JsonException e)
+            {
+                throw new ButtplugMessageException($"Not valid JSON: {jsonMsg} - {e.Message}");
+            }
+
+            foreach (var jsonObj in msgArray.RootElement.EnumerateArray())
+            {
+                string msgName = string.Empty;
+                foreach (var obj in jsonObj.EnumerateObject())
+                {
+                    msgName = obj.Name;
+                }
+                //var msgName = jsonObj.Properties().First().Name;
+
+                // Only way we should get here is if the schema includes a class that we don't
+                // have a matching C# class for.
+                if (!_messageTypes.ContainsKey(msgName))
+                {
+                    throw new ButtplugMessageException($"{msgName} is not a valid message class");
+                }
+
+                // This specifically could fail due to object conversion.
+                msgList.Add(DeserializeAs(jsonObj, _messageTypes[msgName]));
+            }
             return msgList;
         }
 
@@ -122,7 +127,7 @@ namespace Buttplug.Core
         /// <param name="object">JSON Object to convert to a <see cref="ButtplugMessage"/>.</param>
         /// <param name="msgType">Type of message we want to convert the JSON object to.</param>
         /// <returns>Returns a deserialized <see cref="ButtplugMessage"/>, as the requested type.</returns>
-        private ButtplugMessage DeserializeAs(JObject obj, Type msgType)
+        private ButtplugMessage DeserializeAs(JsonElement obj, Type msgType)
         {
             if (!msgType.IsSubclassOf(typeof(ButtplugMessage)))
             {
@@ -138,8 +143,10 @@ namespace Buttplug.Core
             var msgName = ButtplugMessage.GetName(msgType);
             try
             {
-                var msgObj = obj[msgName].Value<JObject>();
-                var msg = (ButtplugMessage)msgObj.ToObject(msgType, _serializer);
+                var msgObj = obj.GetProperty(msgName);
+                //var msgObj = obj[msgName].AsObject();
+                var msg = (ButtplugMessage)JsonSerializer.Deserialize(msgObj, msgType, options: _serializerOptions);
+                //var msg = (ButtplugMessage)msgObj.ToObject(msgType, _serializer);
                 return msg;
             }
             catch (InvalidCastException e)
@@ -147,7 +154,7 @@ namespace Buttplug.Core
                 throw new ButtplugMessageException(
                     $"Could not create message for JSON {obj}: {e.Message}");
             }
-            catch (JsonSerializationException e)
+            catch (JsonException e)
             {
                 throw new ButtplugMessageException(
                     $"Could not create message for JSON {obj}: {e.Message}");
@@ -180,9 +187,9 @@ namespace Buttplug.Core
                     "Message cannot be converted to JSON.", msg.Id);
             }
 
-            var msgArray = new JArray { jsonMsg };
+            var msgArray = new JsonArray { jsonMsg };
 
-            return msgArray.ToString(Formatting.None);
+            return msgArray.ToJsonString();//TODO: Formatting.None
         }
 
         /// <summary>
@@ -195,7 +202,7 @@ namespace Buttplug.Core
         public string Serialize(IEnumerable<ButtplugMessage> msgs)
         {
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
-            var msgArray = new JArray();
+            var msgArray = new JsonArray();
             foreach (var msg in msgs)
             {
                 var obj = ButtplugMessageToJObject(msg);
@@ -215,7 +222,7 @@ namespace Buttplug.Core
                     "No messages serialized.");
             }
 
-            return msgArray.ToString(Formatting.None);
+            return msgArray.ToJsonString();
         }
 
         /// <summary>
@@ -228,9 +235,9 @@ namespace Buttplug.Core
         /// constructor for a message is not available.
         /// </exception>
         /// <returns>JObject on success, but can return null in cases where a system message is not compatible with a client schema.</returns>
-        private JObject ButtplugMessageToJObject(ButtplugMessage msg)
+        private JsonNode ButtplugMessageToJObject(ButtplugMessage msg)
         {
-            return new JObject(new JProperty(msg.Name, JObject.FromObject(msg)));
+            return new JsonObject(new List<KeyValuePair<string, JsonNode>>() { new KeyValuePair<string, JsonNode>(msg.Name, JsonSerializer.SerializeToNode(msg, msg.GetType(), options: _serializerOptions)) });
         }
     }
 }

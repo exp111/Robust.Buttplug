@@ -6,19 +6,21 @@
 
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Buttplug.Core.Messages
 {
     /// <summary>
     /// Base class for Buttplug protocol messages.
     /// </summary>
+    /// 
     public abstract class ButtplugMessage
     {
         /// <summary>
         /// Message ID.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
         public uint Id { get; set; }
 
         [JsonIgnore]

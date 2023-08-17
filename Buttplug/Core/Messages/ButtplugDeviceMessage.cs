@@ -4,7 +4,7 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Buttplug.Core.Messages
 {
@@ -16,7 +16,8 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Device index the message is intended for.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
         public uint DeviceIndex { get; set; }
 
         /// <summary>

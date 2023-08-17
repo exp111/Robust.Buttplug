@@ -7,8 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 // Namespace containing all Buttplug messages, as specified by the Buttplug Message Spec at
 // https://docs.buttplug.io/spec. For consistency sake, all message descriptions are stated in
@@ -42,7 +41,8 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Text to send.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
         public string TestString
         {
             get => _testStringImpl;
@@ -110,13 +110,15 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Specific error type this message describes.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
         public ErrorClass ErrorCode;
 
         /// <summary>
         /// Human-readable error description.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
         public string ErrorMessage;
 
         /// <summary>
@@ -143,7 +145,8 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Number of actuators/sensors/channels/etc this message is addressing.
         /// </summary>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public uint? FeatureCount;
 
         public MessageAttributes()
@@ -169,14 +172,16 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Name of the device.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public readonly string DeviceName;
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
+        public /*readonly*/ string DeviceName;
 
         /// <summary>
         /// Device index.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public readonly uint DeviceIndex;
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
+        public /*readonly*/ uint DeviceIndex;
 
         /// <summary>
         /// Device display name, set up by the user.
@@ -186,27 +191,28 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Recommended amount of time between commands, in milliseconds.
         /// </summary>
-        [JsonProperty(Required = Required.Default)]
+        //[JsonProperty(Required = Required.Default)]
         public readonly uint DeviceMessageTimingGap;
 
         /// <summary>
         /// List of messages that a device supports, with additional attribute data.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public readonly DeviceMessageAttributes DeviceMessages;
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
+        public /*readonly*/ DeviceMessageAttributes DeviceMessages;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceMessageInfo"/> class.
         /// </summary>
-        /// <param name="index">Device index.</param>
-        /// <param name="name">Device name.</param>
-        /// <param name="messages">List of device messages/attributes supported.</param>
-        public DeviceMessageInfo(uint index, string name,
-            DeviceMessageAttributes messages)
+        /// <param name="deviceIndex">Device index.</param>
+        /// <param name="deviceName">Device name.</param>
+        /// <param name="deviceMessages">List of device messages/attributes supported.</param>
+        public DeviceMessageInfo(uint deviceIndex, string deviceName,
+            DeviceMessageAttributes deviceMessages)
         {
-            DeviceName = name;
-            DeviceIndex = index;
-            DeviceMessages = messages;
+            DeviceName = deviceName;
+            DeviceIndex = deviceIndex;
+            DeviceMessages = deviceMessages;
         }
 
         // Implementation details for IButtplugDeviceInfoMessage interface
@@ -230,18 +236,20 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// List of devices currently connected.
         /// </summary>
-        [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
-        public readonly DeviceMessageInfo[] Devices = new DeviceMessageInfo[0];
+        //[JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonRequired]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public /*readonly*/ DeviceMessageInfo[] Devices = new DeviceMessageInfo[0];
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceList"/> class.
         /// </summary>
-        /// <param name="deviceList">List of devices currently connected.</param>
+        /// <param name="devices">List of devices currently connected.</param>
         /// <param name="id">Message ID.</param>
-        public DeviceList(DeviceMessageInfo[] deviceList, uint id)
+        public DeviceList(DeviceMessageInfo[] devices, uint id)
             : base(id)
         {
-            Devices = deviceList;
+            Devices = devices;
         }
 
         /// <inheritdoc />
@@ -260,7 +268,8 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Name of device.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
         public string DeviceName;
 
         /// <summary>
@@ -271,14 +280,15 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Recommended amount of time between commands, in milliseconds.
         /// </summary>
-        [JsonProperty(Required = Required.Default)]
+        //[JsonProperty(Required = Required.Default)]
         public readonly uint DeviceMessageTimingGap;
 
         /// <summary>
         /// Commands supported by device.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public readonly DeviceMessageAttributes DeviceMessages;
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
+        public /*readonly*/ DeviceMessageAttributes DeviceMessages;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceAdded"/> class.
@@ -321,8 +331,9 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Device index.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public readonly uint DeviceIndex;
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
+        public /*readonly*/ uint DeviceIndex;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceRemoved"/> class.
@@ -408,13 +419,15 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Client name.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
         public string ClientName;
 
         /// <summary>
         /// Client message schema version.
         /// </summary>
-        [JsonProperty(Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
+        //[JsonProperty(Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public uint MessageVersion;
 
         /// <summary>
@@ -441,19 +454,22 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// The schema version of the server. Must be greater or equal to version client reported in <see cref="RequestServerInfo"/>.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
         public uint MessageVersion;
 
         /// <summary>
         /// Expected ping time (in milliseconds).
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
         public uint MaxPingTime;
 
         /// <summary>
         /// Server name.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
         public string ServerName;
 
         /// <summary>
@@ -497,7 +513,8 @@ namespace Buttplug.Core.Messages
         /// Index of vibrator on device. Indexes are specific per device, see
         /// https://docs.buttplug.io/stphikal for device info.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
         public uint Index;
 
         protected GenericMessageSubcommand(uint index)
@@ -525,7 +542,8 @@ namespace Buttplug.Core.Messages
             /// <summary>
             /// Gets/sets vibration speed (0.0-1.0).
             /// </summary>
-            [JsonProperty(Required = Required.Always)]
+            //[JsonProperty(Required = Required.Always)]
+            [JsonRequired]
             public double Scalar
             {
                 get => _scalarImpl;
@@ -561,7 +579,8 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// List of vibrator speeds.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
         public List<ScalarSubcommand> Scalars;
 
         /// <summary>
@@ -605,7 +624,8 @@ namespace Buttplug.Core.Messages
             /// <summary>
             /// Gets/sets rotation speed.
             /// </summary>
-            [JsonProperty(Required = Required.Always)]
+            //[JsonProperty(Required = Required.Always)]
+            [JsonRequired]
             public double Speed
             {
                 get => _speedImpl;
@@ -628,7 +648,8 @@ namespace Buttplug.Core.Messages
             /// <summary>
             /// Rotation direction.
             /// </summary>
-            [JsonProperty(Required = Required.Always)]
+            //[JsonProperty(Required = Required.Always)]
+            [JsonRequired]
             public bool Clockwise;
 
             /// <summary>
@@ -676,7 +697,8 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// List of rotation speeds and directions.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
         public List<RotateSubcommand> Rotations;
 
         /// <summary>
@@ -720,13 +742,15 @@ namespace Buttplug.Core.Messages
             /// <summary>
             /// Duration of movement to goal position.
             /// </summary>
-            [JsonProperty(Required = Required.Always)]
+            //[JsonProperty(Required = Required.Always)]
+            [JsonRequired]
             public uint Duration;
 
             /// <summary>
             /// Gets/sets actuator goal position (0.0-1.0).
             /// </summary>
-            [JsonProperty(Required = Required.Always)]
+            //[JsonProperty(Required = Required.Always)]
+            [JsonRequired]
             public double Position
             {
                 get => _positionImpl;
@@ -791,7 +815,8 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// List of linear movement vectors.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
         public List<VectorSubcommand> Vectors;
 
         /// <summary>
@@ -856,10 +881,12 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// List of vibrator speeds.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
         public uint SensorIndex;
 
-        [JsonProperty(Required = Required.Always)]
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired]
         public SensorType SensorType;
 
         /// <summary>
@@ -896,13 +923,13 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// List of vibrator speeds.
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public readonly uint SensorIndex;
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired] public /*readonly*/ uint SensorIndex;
 
-        [JsonProperty(Required = Required.Always)]
-        public readonly SensorType SensorType;
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired] public /*readonly*/ SensorType SensorType;
 
-        [JsonProperty(Required = Required.Always)]
-        public readonly List<int> data;
+        //[JsonProperty(Required = Required.Always)]
+        [JsonRequired] public /*readonly*/ List<int> data;
     }
 }
