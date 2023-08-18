@@ -24,11 +24,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="deniszykov.WebSocketListener" Version="4.2.16" />
     <PackageReference Include="System.Threading.Channels" Version="7.0.0" />
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\..\WebSocketListener\deniszykov.WebSocketListener\deniszykov.WebSocketListener.csproj" />
     <ProjectReference Include="..\Buttplug\Buttplug.csproj" />
   </ItemGroup>
 
