@@ -293,15 +293,15 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceAdded"/> class.
         /// </summary>
-        /// <param name="index">Device index.</param>
-        /// <param name="name">Device name.</param>
-        /// <param name="messages">Commands supported by device.</param>
-        public DeviceAdded(uint index, string name,
-            DeviceMessageAttributes messages)
-            : base(ButtplugConsts.SystemMsgId, index)
+        /// <param name="deviceIndex">Device index.</param>
+        /// <param name="deviceName">Device name.</param>
+        /// <param name="deviceMessages">Commands supported by device.</param>
+        public DeviceAdded(uint deviceIndex, string deviceName,
+            DeviceMessageAttributes deviceMessages)
+            : base(ButtplugConsts.SystemMsgId, deviceIndex)
         {
-            DeviceName = name;
-            DeviceMessages = messages;
+            DeviceName = deviceName;
+            DeviceMessages = deviceMessages;
         }
 
         /// <inheritdoc />
@@ -338,11 +338,11 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceRemoved"/> class.
         /// </summary>
-        /// <param name="index">Index of disconnected device.</param>
-        public DeviceRemoved(uint index)
+        /// <param name="deviceIndex">Index of disconnected device.</param>
+        public DeviceRemoved(uint deviceIndex)
             : base(ButtplugConsts.SystemMsgId)
         {
-            DeviceIndex = index;
+            DeviceIndex = deviceIndex;
         }
     }
 
@@ -435,12 +435,12 @@ namespace Buttplug.Core.Messages
         /// </summary>
         /// <param name="clientName">Client name.</param>
         /// <param name="id">Message Id.</param>
-        /// <param name="schemversion">Message schema version.</param>
-        public RequestServerInfo(string clientName, uint id = ButtplugConsts.DefaultMsgId, uint schemversion = ButtplugConsts.CurrentSpecVersion)
+        /// <param name="messageVersion">Message schema version.</param>
+        public RequestServerInfo(string clientName, uint id = ButtplugConsts.DefaultMsgId, uint messageVersion = ButtplugConsts.CurrentSpecVersion)
             : base(id)
         {
             ClientName = clientName;
-            MessageVersion = schemversion;
+            MessageVersion = messageVersion;
         }
     }
 
